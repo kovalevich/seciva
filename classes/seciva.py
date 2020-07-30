@@ -11,7 +11,7 @@ def sigmoid_derivative(x):
     return x * (1 - x)
 
 
-class Nn:
+class Seciva:
 
     """ Класс нейронной сети реализует логику прямого прохождения сигнала по сети
     и обратное распространение ошибки с корректировкой весов связей"""
@@ -19,12 +19,16 @@ class Nn:
     # Конструктор принимает параметры нейронной сети - layers
     # передаем список, длина которого = количество слоев,
     # а каждое значение = количество нейронов в соответствующем слое
-    def __init__(self, layers: list):
+    def __init__(self, layers: list, name=None):
         self.__layers = [zeros(layer) for layer in layers]
         self.__errors = [zeros(layer) for layer in layers]
         self.__weights = []
         self.__generate_weights()
         self.__size = len(self.__layers)
+        self.__name = name if name is not None else self.__hash__()
+
+    def save(self, name=self.__name):
+        pass
 
     def solution(self, input_data: list):
         """ Метод для решения (прямого распространения) входных данных input_data """
@@ -37,10 +41,14 @@ class Nn:
 
     def train(self, input_data: list, output_data: list, iterations: int = 1000):
         """ Метод обучения по входным и выходным данным """
+        i = iterations
         while iterations > 0:
             solution = self.solution(input_data)
             error = output_data - solution
             self.__back(error)
+            progress = 100 - (iterations / i) * 100
+            if progress % 5 == 0:
+                print(int(progress), '%')
             iterations -= 1
 
     def __back(self, error: list):
